@@ -1,30 +1,14 @@
-let question= '';
+let username= '';
 let lista = '';
-let obj;
+let newmessage;
 
-let messagebefore = [
-   {from:`Marcelo`, 
-   to: `all`,
-   text:'exp',
-   type:'message'},
 
-   {from:`Marcelo`,
-   to: `all`,
-   text:'exp',
-   type:'message'},
-
-];
+username = prompt('Qual seu nome?');
 
 //salvar o nome quando a pessoa entrar
 function login(){
-    question = prompt('Qual seu nome?');
 
-
-     obj = {
-        name:`${question}`
-    };
-
-    const request = axios.post("https://mock-api.driven.com.br/api/v6/uol/participants",obj);
+    const request = axios.post("https://mock-api.driven.com.br/api/v6/uol/participants",{name:username});
 
    request.then(promissein);
    request.catch(promisseout);
@@ -32,103 +16,130 @@ function login(){
 login();
 //se a promessa for cumprida o usuario entrou na sala
 function promissein(response0) {    
-    console.log(response0);  
-    console.log(response0.data);
+    console.log('Ok login');  
+}
+console.log(newmessage)
 
-    let list = document.querySelector('.mid ');
-    for(let i = 0;i< response0.data.length-1; i++){
-        
-        
-        let obj = response0.data[i];
-        list.innerHTML = list.innerHTML +   `
-        <ul class="dm">
-          <li class="time"><h1>(10:21:53)</h1></li>
-          <li class="txt"><h1>${question} entrou na sala... </h1></li>
-        </ul>
-        `
+function promisseout(error0){
+
+    const user = error0.response.status;
+
+    if(user === 409){
+        alert('usario ja conectado')
+        window.location.reload(true);
     }
 }
-
-function promisseout(error){
-    console.log('user invalido');
-}
-promissein();
-
  // verificar o status do participante
 
 function statuscheck(){
 
-   obj = {
-    name:`${question}`,
-   };
-
-   const request =axios.post("https://mock-api.driven.com.br/api/v6/uol/status",obj);
+ 
+   const request =axios.post("https://mock-api.driven.com.br/api/v6/uol/status",{name:username});
 
    //a cada 5s enviar requisição 
    request.then(statusin);
    request.catch(statusout);
 
 } 
-setTimeout(statuscheck, 5000);
+statuscheck();
+// verificacao do status api
+setInterval(statuscheck, 5000);
 
 function statusin(response1){
-    console.log(' status OK');
-    console.log(response1);
-    console.log(response1.data);
+
+    console.log('status OK');
 }
 function statusout(error1){
 
-    console.log('o usuario saiu');
-    console.log(error1.response.status);
+    console.log(error1.data);  
+}
 
-    const user = erro.response.status;
-    if(user === 400){
-        alert('usario ja conectado')
-        location.reload(true);
+// postar as mensagens da api
+function postmessage (){    
+
+    let chat = document.querySelector('.text-dm').value;
+
+    newmessage = {
+        from:username, // o nome q eu peguei no login
+        to:"Todos", // o padrao requisitado
+        text:chat, // o que foi digitado
+        type:"message" // padrao requisitado
     }
-}
 
-   //se for recebido pela api mostrar na tela
- 
-
- // pegar os dados digitados nos imputs
- // criar nova array ao digitar o texto
-   
-
-
- function savetext(){
-
-   const normalmessage = document.querySelector('.text-dm').value;
-   const mmessage =`
-   <ul class="dm">
-   <li class="time"><h1>(10:21:53)</h1></li>
-   <li class="txt"><h1>${obj.nome} para: ${normalmessage}</h1></li>
- </ul>
-   `
-    const newmessage = {
-        from:`${question}`,
-        to:   `Todos`,
-        text: `${normalmessage}`,
-        type: `mensagem`,
-    };
-
-     console.log(newmessage);
-     messagebefore += messagebefore.push(newmessage);
-
-     const request = axios.post("https://mock-api.driven.com.br/api/v6/uol/messages",newmessage);
-      
-      request.then(messagecheck);
-      request.catch(messageNocheck);
-
-}
-
-function messagecheck(response2){
-
-        console.log(response2);
-}
-
-function messageNocheck(error2){
+    const request = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages',newmessage);
     
-    console.log('Não chegou a mensagem');   
-    console.log(error2);
+
+    request.then(promisse1 => postin(promisse1));
+    request.catch(promisse2 => postout(promisse2));
 }
+function postin(promisse1){
+   
+    console.log(promisse1.data);
+    console.log('postou as mensagens')
+
+}
+
+function postout(promisse2){
+
+    console.log(promisse2);
+    console.log('não postou as mensagens');
+}
+
+// requisição das mensagens da api
+async function getmessage(){
+//testando
+ await axios.get("https://mock-api.driven.com.br/api/v6/uol/messages")
+
+ .then(promisse => messagein(promisse))
+ .catch(promisse0 => messageout(promisse0))
+
+}
+getmessage();
+//setInterval(getmessage,3000)       
+function messagein(promisse){
+    console.log('pegou as mensagens');
+    console.log(promisse.data)
+    newmessage = promisse.data;
+    console.log(newmessage);
+   //createchat();
+}
+console.log(newmessage);
+function messageout(promisse0){
+
+    console.log(promisse0.promisse );
+    console.log('nao pegou as mensagens');
+    window.location.reload();
+}
+
+//criar template 
+
+function createchat(){
+    
+    let template = document.querySelector('.mid');
+
+   for(let i=0; i < newmessage.length; i++){
+
+      if(newmessage.type === 'status'){
+        template= `
+        <ul class="dm dm-login">
+        <li class="time"><h1>(${newmessage[i].time})</h1></li>
+        <li class="txt"> <h1><b>${newmessage[i].from}<b/>${newmessage[i].text}.</h1></li>
+      </ul>
+        `
+        template.innerHTML += template;
+        template.scrollIntoView();
+
+      }
+       if (newmessage.type === 'message'){
+        template= `
+        <ul class="dm">
+        <li class="time"><h1>(${newmessage[i].time})</h1></li>
+        <li class="txt"><h1><b>${newmessage[i].from}<b/>para<b>${newmessage[i].to}</b>: ${newmessage[i].text}</h1></li>
+      </ul>
+        `
+        template.innerHTML += template;
+        template.scrollIntoView();
+      } 
+    }
+
+} 
