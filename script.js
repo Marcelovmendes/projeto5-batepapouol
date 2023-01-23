@@ -76,7 +76,7 @@ function postout(promisse2){
 
     console.log(promisse2);
     console.log('não postou as mensagens');
-    window.location.reload();  
+    window.location.reload();
 }
 
  function getmessage(){
@@ -116,10 +116,7 @@ function createchat(){
         `
         main.innerHTML+= template;
         main.lastElementChild.scrollIntoView();
-        if(main.lastElementChild.scrollIntoView() != null){
-          main.lastElementChild.scrollIntoView();
-          main.innerHTML+= template;
-        }
+        
         }
       else if (newmessage[i].type === 'message'){
         let template =`
@@ -129,26 +126,21 @@ function createchat(){
       </li>
         `
 
-        if(main.lastElementChild.scrollIntoView() != null){
-
           main.lastElementChild.scrollIntoView();
           main.innerHTML+= template;
         }
-       } 
-       else if (newmessage[i].type === 'private_message'){
+        
+        if (newmessage[i].type === 'private_message'){
         let template =`
         <li class="dm dm-private"data-test="message">
         <span class="time"><h1>(${newmessage[i].time})</h1></span>
         <span class="txt"><h1><b>${newmessage[i].from}</b> para <b>${newmessage[i].to}</b>: ${newmessage[i].text}</h1></span>
       </li>
         `
-        if(main.lastElementChild.scrollIntoView() == null){
-          
+ 
           main.lastElementChild.scrollIntoView();
           main.innerHTML+= template;
-        }
        } 
     }
-
-}
+  }
 
