@@ -44,7 +44,6 @@ body{
     margin-top: 105px ;
 }
 .dm{
-    background-color: #FFFFFF;
     height: 40px;
     width: 100%;
     border-radius: 2px;
@@ -81,9 +80,15 @@ body{
     width: 100%;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     
 }
-
+.dm-private{
+    background-color: #FADEDE;
+}
+.dm-public{
+    background-color: #FFFFFF;
+}
 .dm-login{
     background-color:#DCDCDC;
 }

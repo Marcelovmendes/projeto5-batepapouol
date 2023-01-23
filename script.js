@@ -23,18 +23,10 @@ function promissein(response0) {
 }
 function promisseout(error0){
 
-    const user = error0.response.status;
-
-    if(user === 409){
-        alert('Usuário ja conectado')
-        window.location.reload(true);
-    }
-    if(user === 422){
-        alert('As informções digitas são invalidades, tente novamente')
-    }
-}
+  window.location.reload();
+  
  // verificar o status do participante
-
+}
 function statuscheck(){
 
  
@@ -52,8 +44,11 @@ function statusin(response1){
     console.log('status OK');
 }
 function statusout(error1){
-
     console.log(error1.data);  
+    const user = error1.data.status;
+    if( user === '409'){
+        alert('usuário já logado')
+    }
   
 }
 
@@ -93,12 +88,12 @@ function postout(promisse2){
 }
 
 // requisição das mensagens da api
-async function getmessage(){
+ function getmessage(){
 //teste async
- await axios.get("https://mock-api.driven.com.br/api/v6/uol/messages")
+   const request= axios.get("https://mock-api.driven.com.br/api/v6/uol/messages")
 
- .then(promisse => messagein(promisse))
- .catch(promisse0 => messageout(promisse0))
+ request.then(promisse => messagein(promisse))
+ request.catch(promisse0 => messageout(promisse0))
 
 }
 //setInterval(messagein,3000)       
@@ -109,8 +104,8 @@ function messagein(promisse){
 }
 
 function messageout(promisse0){
-
-    console.log(promisse0.promisse);
+    console.log(promisse0.data);
+    window.location.reload();
 }
 
 //criar template 
@@ -133,9 +128,19 @@ function createchat(){
         main.innerHTML+= template;
         main.lastElementChild.scrollIntoView();
         }
-       if (newmessage[i].type === 'message'){
+      else if (newmessage[i].type === 'message'){
         let template =`
-        <li class="dm" data-test="message">
+        <li class="dm dm-public" data-test="message">
+        <span class="time"><h1>(${newmessage[i].time})</h1></span>
+        <span class="txt"><h1><b>${newmessage[i].from}</b> para <b>${newmessage[i].to}</b>: ${newmessage[i].text}</h1></span>
+      </li>
+        `
+        main.lastElementChild.scrollIntoView();
+        main.innerHTML+= template;
+       } 
+       else if (newmessage[i].type === 'private_message'){
+        let template =`
+        <li class="dm dm-private" data-test="message">
         <span class="time"><h1>(${newmessage[i].time})</h1></span>
         <span class="txt"><h1><b>${newmessage[i].from}</b> para <b>${newmessage[i].to}</b>: ${newmessage[i].text}</h1></span>
       </li>
