@@ -41,7 +41,8 @@ body{
     height: 100%;
     position: relative;
     z-index: -1;
-    margin-top: 105px ;
+    margin-bottom: 20px;
+
 }
 .dm{
     height: 40px;
@@ -94,7 +95,7 @@ body{
 }
 .bot{
     background-color: #FFFFFF;
-    height: 80px;
+    height: 65px;
     width: 100%;
     left: 0px;
     bottom: 0px;

@@ -1,11 +1,9 @@
 let username= '';
-let lista = '';
 let newmessage;
 
 
 username = prompt('Qual seu nome?');
 
-//salvar o nome quando a pessoa entrar
 function login(){
 
     const request = axios.post("https://mock-api.driven.com.br/api/v6/uol/participants",{name:username});
@@ -14,7 +12,7 @@ function login(){
     request.catch(error0 => promisseout(error0));
 }
 login();
-//se a promessa for cumprida o usuario entrou na sala
+
 function promissein(response0) {    
     console.log('Ok login');  
     setInterval(statuscheck, 5000);
@@ -25,19 +23,16 @@ function promisseout(error0){
 
   window.location.reload();
   
- // verificar o status do participante
 }
-function statuscheck(){
+  function statuscheck(){
 
  
-   const request =axios.post("https://mock-api.driven.com.br/api/v6/uol/status",{name:username});
+   const request = axios.post("https://mock-api.driven.com.br/api/v6/uol/status",{name:username})
 
-   //a cada 5s enviar requisição 
-   request.then(response1 => statusin(response1));
-   request.catch(error1 => statusout(error1));
+   request.then(response1 => statusin(response1))
+   request.catch(error1 => statusout(error1))
 
 } 
-// verificacao do status api
 
 function statusin(response1){
 
@@ -45,23 +40,23 @@ function statusin(response1){
 }
 function statusout(error1){
     console.log(error1.data);  
-    const user = error1.data.status;
+    const user = error1.status;
     if( user === '409'){
         alert('usuário já logado')
     }
   
 }
 
-// postar as mensagens da api
-function postmessage (){    
+
+ function postmessage (){    
 
     let chat = document.querySelector('.text-dm').value;
 
    let message = {
-        from:username, // o nome q eu peguei no login
-        to:"Todos", // o padrao requisitado
-        text:chat, // o que foi digitado
-        type:"message" // padrao requisitado
+        from:username, 
+        to:"Todos", 
+        text:chat, 
+        type:"message"
     }
 
     const request = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages',message);
@@ -81,22 +76,17 @@ function postout(promisse2){
 
     console.log(promisse2);
     console.log('não postou as mensagens');
-    const user = promisse2.response.status;
-    if(user === '400'){
-        alert('Erro ao executar esse processo, recarregue a pagin');
-    }
+    window.location.reload();  
 }
 
-// requisição das mensagens da api
  function getmessage(){
-//teste async
+
    const request= axios.get("https://mock-api.driven.com.br/api/v6/uol/messages")
 
  request.then(promisse => messagein(promisse))
  request.catch(promisse0 => messageout(promisse0))
 
-}
-//setInterval(messagein,3000)       
+}     
 function messagein(promisse){
     console.log('pegou as mensagens');
     newmessage = promisse.data;
@@ -108,7 +98,6 @@ function messageout(promisse0){
     window.location.reload();
 }
 
-//criar template 
 function createchat(){
     
     let main = document.querySelector('.mid');
@@ -127,26 +116,37 @@ function createchat(){
         `
         main.innerHTML+= template;
         main.lastElementChild.scrollIntoView();
+        if(main.lastElementChild.scrollIntoView() != null){
+          main.lastElementChild.scrollIntoView();
+          main.innerHTML+= template;
+        }
         }
       else if (newmessage[i].type === 'message'){
         let template =`
-        <li class="dm dm-public" data-test="message">
+        <li class="dm dm-public"        data-test="message">
         <span class="time"><h1>(${newmessage[i].time})</h1></span>
         <span class="txt"><h1><b>${newmessage[i].from}</b> para <b>${newmessage[i].to}</b>: ${newmessage[i].text}</h1></span>
       </li>
         `
-        main.lastElementChild.scrollIntoView();
-        main.innerHTML+= template;
+
+        if(main.lastElementChild.scrollIntoView() != null){
+
+          main.lastElementChild.scrollIntoView();
+          main.innerHTML+= template;
+        }
        } 
        else if (newmessage[i].type === 'private_message'){
         let template =`
-        <li class="dm dm-private" data-test="message">
+        <li class="dm dm-private"data-test="message">
         <span class="time"><h1>(${newmessage[i].time})</h1></span>
         <span class="txt"><h1><b>${newmessage[i].from}</b> para <b>${newmessage[i].to}</b>: ${newmessage[i].text}</h1></span>
       </li>
         `
-        main.lastElementChild.scrollIntoView();
-        main.innerHTML+= template;
+        if(main.lastElementChild.scrollIntoView() == null){
+          
+          main.lastElementChild.scrollIntoView();
+          main.innerHTML+= template;
+        }
        } 
     }
 
